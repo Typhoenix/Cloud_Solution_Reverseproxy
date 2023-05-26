@@ -6,7 +6,7 @@ In this project, we will build a secure infrastructure inside AWS VPC (Virtual P
 ## Project Design Architecture Diagram
 #
 
-![](./images/architecture%20diagram.PNG)
+
 
 #
 
@@ -23,7 +23,7 @@ Move the DevOps account into the Dev OU.
 
 - Create a hosted zone in AWS, and map it to your free domain from Freenom. [Watch how to do that here](https://youtu.be/IjcHp94Hq8A)
 
-![](./Images/domain%20creation.PNG)
+![](1.png)
 
 **NOTE** : As you proceed with configuration, ensure that all resources are appropriately tagged, for example:
 
@@ -36,11 +36,11 @@ Move the DevOps account into the Dev OU.
 
 1. Create a VPC
 
-![](./Images/create%20a%20new%20VPC.PNG)
+![](2.png)
 
 2. Create subnets as shown in the architecture
 
-![](./Images/private%20subnet%20created.PNG)
+![](3.png)
 
 3. Create a route table and associate it with public subnets
 
@@ -51,19 +51,16 @@ Move the DevOps account into the Dev OU.
 
 5. Create an Internet Gateway
 
-![](./Images/create%20TCS-igw.PNG)
+![](4.png)
 
 1. Edit a route in public route table, and associate it with the Internet Gateway. (This is what allows a public subnet to be accisble from the Internet)
    
-![](./img/6.pub-routes.png)
 
 7. Create an Elastic IP
 
-![](./img/7.nat_eip.png)
-
 8. Create a Nat Gateway and assign one of the Elastic IPs (*The other 2 will be used by Bastion hosts)
    
-![](./Images/create%20NAT%20gateway.PNG)
+![](5.png)
 
 9. Create a Security Group for:
 
@@ -76,7 +73,8 @@ Webservers: Access to Webservers should only be allowed from the Nginx servers. 
 
 - Data Layer: Access to the Data layer, which is comprised of Amazon Relational Database Service (RDS) and Amazon Elastic File System (EFS) must be carefully desinged – only webservers should be able to connect to RDS, while Nginx and Webservers will have access to EFS Mountpoint.
 
-![](./Images/create%20bastion%20SG.PNG)
+![](6.png)
+![](7.png)
 #
 
 ## Proceed With Compute Resources
@@ -114,11 +112,11 @@ Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully manag
 - Associate the Security groups created earlier for data layer.
 Create an EFS access point. (Give it a name and leave all other settings as default)
 
-![](./Images/creating%20EFS.PNG)
+![](8.png)
 
 - On the EFS setup, create two access points for both `tooling` and `wordpress` applications
   
-![](./Images/access%20points%20for%20tooling%20and%20wordpress.PNG)
+![](9.png)
 #
 
 ## Setup RDS
@@ -135,7 +133,7 @@ To configure RDS, follow steps below:
 - Create a subnet group and add 2 private subnets (data Layer)
 - Create an RDS Instance for mysql 8.*.*
 
-![](./Images/creating%20database.PNG)
+![](10.png)
 
 - To satisfy our architectural diagram, you will need to select either Dev/Test or Production Sample Template. But to minimize AWS cost, you can select the Do not create a standby instance option under Availability & durability sample template (The production template will enable Multi-AZ deployment)
 
@@ -145,7 +143,7 @@ To configure RDS, follow steps below:
 - Configure backups and retention
 - Encrypt the database using the KMS key created earlier
 
-![](./Images/KMS%20created.PNG)
+![](11.png)
 
 - Enable CloudWatch monitoring and export Error and Slow Query logs (for production, also include Audit)
   #
@@ -157,8 +155,8 @@ To configure RDS, follow steps below:
 ## **[Configurations for this servers can be found on this repository](https://github.com/Micah-Shallom/RCR-Project-Configuration.git)**
 #
 
-![](./Images/all%20redhat%20servers.PNG)
-![](./Images/create%20tcs-webserver-ami.PNG)
+![](12.png)
+![](13.png)
 
 
 - Prepare Launch Template For Nginx,tooling, WebServers and Bastion (One Per Subnet)
@@ -173,7 +171,7 @@ To configure RDS, follow steps below:
 
 - Configure Target Groups
 
-![](./Images/creating%20target%20groups.PNG)
+![](15.png)
 
 - Select Instances as the target type
   
@@ -247,14 +245,13 @@ Nginx EC2 Instances will have configurations that accepts incoming traffic only 
 
 - Ensure that health check passes for the target group
 
-![](./Images/loadbalancers.PNG)
+![](16.png)
 
 **NOTE:** This process must be repeated for both WordPress and Tooling websites.
 
 - Route traffic coming from the nginx server into the internal loadbalancer by sending traffic to the respective target group based on the url being requested by the user.
   
-![](./Images/adding%20rules.PNG)
-
+![](17.png)
 
 ## Creating Databases for Wordpress and Tooling Sites on MySQL rds
 
@@ -262,9 +259,8 @@ Nginx EC2 Instances will have configurations that accepts incoming traffic only 
 
 - Create databases 
 
-![](./Images/creating%20database%20tooling%20and%20wordpress.PNG)  
-
+![](18)
 
 ## Adding URL EndPoints to Route53 for Wordpress and Tooling Access
-![](./Images/route%2053%20records.PNG)
-![](./Images/tooling%20webpage.PNG)
+![](19.png)
+![](20.png)
